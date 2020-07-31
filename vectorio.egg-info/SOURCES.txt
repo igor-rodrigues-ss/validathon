@@ -1,0 +1,15 @@
+README.md
+setup.py
+be_tools/__init__.py
+be_tools/validation/String.py
+be_tools/validation/__init__.py
+be_tools/validation/field_must_not_be_contains_num.py
+be_tools/validation/ivalidate.py
+be_tools/validation/validate.py
+tests/__init__.py
+vectorio.egg-info/PKG-INFO
+vectorio.egg-info/SOURCES.txt
+vectorio.egg-info/dependency_links.txt
+vectorio.egg-info/not-zip-safe
+vectorio.egg-info/requires.txt
+vectorio.egg-info/top_level.txt
