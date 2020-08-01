@@ -5,14 +5,14 @@ from validathon.validation_result import ValidationResult
 from validathon.ivalidate import IValidation
 
 
-class CatchResult:
+class Catch:
 
     def __init__(self, obj: IValidation):
         self.val_obj = obj
 
     def validate(self, *args, **kwargs) -> ValidationResult:
         try:
-            self.val_obj.validate(*args, **kwargs)
+            return self.val_obj.validate(*args, **kwargs)
         except ValidathonBaseException as exc1:
             field = exc1.validation_result.field
             msg = exc1.validation_result.msg

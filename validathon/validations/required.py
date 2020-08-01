@@ -13,10 +13,11 @@ class Required(IValidation):
     def __init__(self, custom_exc: Exception = None):
         self._custom_exc = custom_exc
 
-    def validate(self, key: str, value: Any):
+    def validate(self, key: str, value: Any) -> ValidationResult:
         if value == REQUIRED_KEY:
             if bool(self._custom_exc):
                 raise self._custom_exc
             raise RequiredExc(
                 ValidationResult(field=key, msg=f'Field "{key}" does not exists.', valid=False)
             )
+        return ValidationResult(field=key, msg='', valid=True, validation=self)

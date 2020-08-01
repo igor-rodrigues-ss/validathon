@@ -3,8 +3,8 @@
 
 from validathon.validations.str_should_contains import StrShouldContains
 from validathon.ivalidate import REQUIRED_KEY
-from validathon.validations.required_field import Required
-from validathon import CatchResult
+from validathon.validations.required import Required
+from validathon import Catch
 
 
 """
@@ -67,14 +67,16 @@ if __name__ == '__main__':
             # 'bbb': [RequiredField(), RequiredField()], 'cc': RequiredField()
             # 'bbb': [VR(RequiredField()), VR(DeverSerA(inexisting_field_exc=RequiredFieldExc(
             #     ValidationResult(field='name.aa.bbb', msg='campo não existe', valid=False))))],
-            'cc': [CatchResult(Required(Exception('campo não exisste mlk'))), CatchResult(StrShouldContains('-'))]
+            # 'cc': [Catch(Required(Exception('campo não exisste mlk'))), Catch(StrShouldContains('-'))]
+            'cca': [Catch(Required(Exception('campo não exisste mlk'))), Catch(StrShouldContains('-'))]
         }}}
     )
+     # TODO: criar testes unitários para campos que não existe
 
 
 
     # maps = validator.validate({'name': {'aa': {'bbb': 'aa', 'cc': 'aaa'}}})
-    maps = validator.validate({'name': {'aa': {'cca': 'asdf-'}}})
+    maps = validator.validate({'name': {'aa': {'cc': 'asdf-'}}})
     # maps = validator.validate({'name': {'aa': {'dd': 'asdf'}}})
     print(maps)
     # Validate(
