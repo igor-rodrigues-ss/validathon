@@ -4,14 +4,12 @@ from typing import Any
 from validathon.ivalidate import IValidation
 from validathon.validations.exceptions import StrShouldContainsExc
 from validathon.validation_result import ValidationResult
-from validathon.validations.exceptions import ValidathonBaseException, FieldDoesNotExistsExc
-
+from validathon.validations.exceptions import FieldDoesNotExistsExc
 
 REQUIRED_KEY = 'campo_não_existe_123456'
 
 
-
-class InexistingFieldValidated(IValidation):
+class AbsentFieldValidated(IValidation):
 
     _validation_obj: IValidation
     _absent_field_exc: Exception = None
@@ -40,19 +38,14 @@ class InexistingFieldValidated(IValidation):
         return self._validation_obj.validate(key, value)
 
 
-@InexistingFieldValidated
+@AbsentFieldValidated
 class StrShouldContains(IValidation):
 
-    # field_does_not_exists_exc: Exception
-
-    # def __init__(self, string: str, custom_exc: Exception=None, field_does_not_exists_exc: Exception = None):
     def __init__(self, string: str, exc: Exception = None):
-        # self._field_does_not_exists_exc = field_does_not_exists_exc
         self._custom_exc = exc
         self._string = string
 
     def validate(self, key: str, value: Any) -> ValidationResult:
-        # super().field_does_not_exists(key, value, self._field_does_not_exists_exc) # TODO: criar testes unitários para validar essa função
         assert isinstance(value, str)
         if self._string not in value:
             if bool(self._custom_exc):
@@ -60,4 +53,4 @@ class StrShouldContains(IValidation):
             raise StrShouldContainsExc(
                 ValidationResult(field=key, msg=f'Field "{key}" not contains "{self._string}".', valid=False)
             )
-        return ValidationResult(field=key, msg='', valid=True, validation=self)
+        return ValidationResult(field=key, msg='', valid=True, validation=self) # TODO: validation=self  necessry?

@@ -32,20 +32,70 @@ class Validathon:
             if isinstance(validations, dict):
                 out_v_map[key_map] = {}
                 self._validate(item_to_val, validations, out_v_map[key_map], path_keys)
-                break
-
-            if isinstance(validations, list) or isinstance(validations, tuple):
-                out_v_map[key_map] = []
-                for validation in validations:
-                    out_v_map[key_map].append(validation.validate(path_keys, item_to_val))
+                # break
             else:
-                out_v_map[key_map] = validations.validate(path_keys, item_to_val)
+                if isinstance(validations, list) or isinstance(validations, tuple):
+                    out_v_map[key_map] = []
+                    for validation in validations:
+                        out_v_map[key_map].append(validation.validate(path_keys, item_to_val))
+                else:
+                    out_v_map[key_map] = validations.validate(path_keys, item_to_val)
 
     def validate(self, data: dict) -> dict:
         assert isinstance(data, dict), '"data" should be a dict.'
         out_validation_map = {}
         self._validate(data, self._val_map, out_validation_map)
         return out_validation_map
+
+
+class ValidationSerialized:
+
+    def create_list(self, output, v):
+        if v.field not in output.keys():
+            output[v.field] = []
+
+    def _validate(self, data: dict, output: dict, serialize_type):
+
+        for k, v in data.items():
+
+            if isinstance(v, dict):
+                self._validate(v, output, serialize_type)
+            else:
+                if isinstance(v, list) or isinstance(v, tuple):
+
+                    for validation_result in v:
+
+                        if serialize_type == 'valid':
+                            if validation_result.valid:
+                                self.create_list(output, v[0])
+                                output[v[0].field].append(validation_result.msg)
+                        elif serialize_type == 'invalid':
+                            if validation_result.valid is False:
+                                self.create_list(output, v[0])
+                                output[v[0].field].append(validation_result.msg)
+                        else:
+                            self.create_list(output, v[0])
+                            output[v[0].field].append(validation_result.msg)
+                else:
+                    if serialize_type == 'valid':
+                        if v.valid:
+                            output[v.field] = v.msg
+                    elif serialize_type == 'invalid':
+                        if v.valid is False:
+                            output[v.field] = v.msg
+                    else:
+                        output[v.field] = v.msg
+
+    def field_and_msg(self, data: dict, serialize_type='only_invalid') -> dict:
+        out = {}
+        self._validate(data, out, serialize_type)
+        return out
+
+from pprint import pprint
+
+
+# TODO: testar com vários campos aninhados
+# TODO: testes unitários para serilizer
 
 
 if __name__ == '__main__':
@@ -55,24 +105,44 @@ if __name__ == '__main__':
     #         'bbb': [VR(RequiredField()), VR(DeverSerA(inexisting_field_exc=RequiredFieldExc(ValidationResult(field='name.aa.bbb', msg='campo não existe', valid=False))))], 'cc': VR(RequiredField())
     #     }}}
     # )
-
+    vmap = {'name':
+            {
+                'aa': {
+                    'cc': Required(valid_msg='validão'), # - valido
+                    # 'bbb': [VR(RequiredField()), VR(DeverSerA(inexisting_field_exc=RequiredFieldExc(
+                    #     ValidationResult(field='name.aa.bbb', msg='campo não existe', valid=False))))],
+                    # 'cc': [Catch(Required(Exception('campo não exisste mlk'))), Catch(StrShouldContains('-'))]
+                    'cca': [Catch(Required(Exception('campo não exisste mlk'))), Catch(StrShouldContains('-'))]
+                },
+                'ccaa': Required(valid_msg='validão'),  # - valido
+                'ccab': Required(),  # - valido
+            }
+        }
     validator = Validathon(
-        {'name': {'aa': {
-            # 'bbb': [RequiredField(), RequiredField()], 'cc': RequiredField()
-            # 'bbb': [VR(RequiredField()), VR(DeverSerA(inexisting_field_exc=RequiredFieldExc(
-            #     ValidationResult(field='name.aa.bbb', msg='campo não existe', valid=False))))],
-            # 'cc': [Catch(Required(Exception('campo não exisste mlk'))), Catch(StrShouldContains('-'))]
-            'cca': [Catch(Required(Exception('campo não exisste mlk'))), Catch(StrShouldContains('-'))]
-        }}}
+        vmap
     )
      # TODO: criar testes unitários para campos que não existe
 
 
 
     # maps = validator.validate({'name': {'aa': {'bbb': 'aa', 'cc': 'aaa'}}})
-    maps = validator.validate({'name': {'aa': {'cc': 'asdf-'}}})
+    maps = validator.validate(
+        {
+            'name': {
+                'aa': {
+                    'cc': 'asdf-'
+                },
+                'ccaa': '',
+                'ccab': 1
+            }
+        }
+    )
     # maps = validator.validate({'name': {'aa': {'dd': 'asdf'}}})
-    print(maps)
+    # pprint(vmap)
+    # print('=====================')
+    # pprint(maps)
+    out = ValidationSerialized().field_and_msg(maps, 'valid')
+    print(out)
     # Validate(
     #     {
     #         'name': 'aaaá', 'teste': {
