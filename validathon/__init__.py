@@ -8,3 +8,5 @@ from validathon.validations.field_must_be_contains_only_str import FieldMustBeCo
 # from validathon.main import Validathon
 from validathon.catch import Catch
 # from validathon.validation_result import ValidationResult
+
+from validathon.validations.str_should_contains import StrShouldContains

@@ -1,6 +1,4 @@
 
-
-
 from validathon.validations.str_should_contains import StrShouldContains
 from validathon.ivalidate import REQUIRED_KEY
 from validathon.validations.required import Required
@@ -11,10 +9,6 @@ from validathon import Catch
 - Caso exista algum chave em dados que não exista no mapa de validação e a variável "map_should_be_identical"
 estiver com valor false, a validação deste campo não será realizada
 """
-
-
-
-
 
 class Validathon:
 

@@ -12,6 +12,10 @@ class ValidathonBaseException(Exception):
         super().__init__(validation_result.msg)
 
 
+class FieldDoesNotExistsExc(ValidathonBaseException):
+    pass
+
+
 class StrShouldContainsExc(ValidathonBaseException):
     pass
 
@@ -46,3 +50,5 @@ class CanNotBeNoneExc(Exception):
 
 class ShouldBeAValidEmailExc(Exception):
     pass
+
+
