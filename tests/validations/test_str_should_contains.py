@@ -1,15 +1,12 @@
+#!-*-coding:utf-8-*-
 
-
+import pytest
 from validathon import StrShouldContains
 from validathon.validation_result import ValidationResult
 from validathon.exceptions import StrShouldContainsExc, FieldDoesNotExistsExc
-from validathon.main import Validathon
-from validathon import Catch
-import pytest
-
-
-class CustomException(Exception):
-    pass
+from validathon.validathon import Validathon
+from validathon import Catch, ValidationSerialized
+from tests.conftest import CustomException
 
 
 class TestStrShouldContains:
@@ -101,3 +98,32 @@ class TestStrShouldContains:
         assert result_map['name'].field == 'name'
         assert result_map['name'].valid is False
         assert result_map['name'].msg == exc_msg
+
+    def test_validate_serialized(self):
+        valid_msg1 = 'Is Valid 1'
+        valid_msg2 = 'Is Valid 2'
+        data = {
+            'name': {
+                'name1': 'abc-abc',
+                'name2': 'abc-abc',
+                'name3': 'abc-abc'
+            }
+        }
+        vmap = {
+            'name': {
+                'name1': StrShouldContains('-', valid_msg=valid_msg1),
+                'name2': StrShouldContains('-', valid_msg=valid_msg2),
+                'name3': [StrShouldContains('-', valid_msg=valid_msg1), StrShouldContains('-', valid_msg=valid_msg2)]
+
+            }
+        }
+        validator = Validathon(vmap)
+        result_map = validator.validate(data)
+        vmp = ValidationSerialized().map_msgs(result_map, root=True)
+        assert 'name.name1' in vmp.keys()
+        assert 'name.name2' in vmp.keys()
+        assert 'name.name3' in vmp.keys()
+        assert vmp['name.name1'] == valid_msg1
+        assert vmp['name.name2'] == valid_msg2
+        assert vmp['name.name3'][0] == valid_msg1
+        assert vmp['name.name3'][1] == valid_msg2

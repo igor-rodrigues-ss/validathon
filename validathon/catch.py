@@ -22,5 +22,4 @@ class Catch:
             # TODO: colocar na documentação para que sempre que o desenvolvedor for lançar uma
             #  execção que seja derivada de ValidathonBaseException para não cair neste fluxo
             return ValidationResult(field=args[0], msg=str(exc2), valid=False, exc=exc2)
-        else:
-            return ValidationResult(field=args[0], msg='', valid=True)
+
