@@ -1,9 +1,10 @@
 
 
 from typing import Any
-from validathon.ivalidate import IValidation, REQUIRED_KEY # trocar este nome para chave não existe
-from validathon.validations.exceptions import RequiredExc  # passar para o exception raiz
+from validathon.ivalidate import IValidation
+from validathon.validations.exceptions import RequiredExc
 from validathon.validation_result import ValidationResult
+from validathon.config import REQUIRED_KEY
 
 
 class Required(IValidation):

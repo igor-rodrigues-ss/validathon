@@ -104,14 +104,14 @@ class TestStrShouldContains:
         valid_msg2 = 'Is Valid 2'
         data = {
             'name': {
-                'name1': 'abc-abc',
+                'name1': 'abc-abc-abc-abc-abc-abc',
                 'name2': 'abc-abc',
                 'name3': 'abc-abc'
             }
         }
         vmap = {
             'name': {
-                'name1': StrShouldContains('-', valid_msg=valid_msg1),
+                'name1': StrShouldContains('abc-abc-abc', valid_msg=valid_msg1),
                 'name2': StrShouldContains('-', valid_msg=valid_msg2),
                 'name3': [StrShouldContains('-', valid_msg=valid_msg1), StrShouldContains('-', valid_msg=valid_msg2)]
 

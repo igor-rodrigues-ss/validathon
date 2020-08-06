@@ -1,7 +1,6 @@
 
-from validathon.validations.str_should_contains import StrShouldContains
-from validathon.ivalidate import REQUIRED_KEY
-from validathon import Catch, ValidationSerialized, Required
+
+from validathon.config import REQUIRED_KEY
 
 
 """

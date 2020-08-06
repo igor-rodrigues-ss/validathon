@@ -1,14 +1,8 @@
 #!-*-coding:utf-8-*-
 
-from abc import ABC, abstractmethod
 from typing import Any
-
+from abc import ABC, abstractmethod
 from validathon.validation_result import ValidationResult
-
-REQUIRED_KEY = 'campo_não_existe_123456'
-
-
-
 
 
 class IValidation(ABC):
