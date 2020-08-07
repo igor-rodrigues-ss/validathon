@@ -2,7 +2,7 @@
 
 from typing import Any
 from abc import ABC, abstractmethod
-from validathon.validation_result import ValidationResult
+from validathon.result import ValidationResult
 
 
 class IValidation(ABC):

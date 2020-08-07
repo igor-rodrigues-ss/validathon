@@ -1,22 +1,22 @@
 #!-*-coding:utf-8-*-
 
 import pytest
-from validathon import StrShouldContains
+from validathon import CanNotBeAEmptyStr
 from validathon.result import ValidationResult
-from validathon.exceptions import StrShouldContainsExc, FieldDoesNotExistsExc
+from validathon.exceptions import CanNotBeAEmptyStrExc, FieldDoesNotExistsExc
 from validathon.validator import Validator
 from validathon import Catch, ValidationSerialized
 from tests.conftest import CustomException
 
 
-class TestStrShouldContains:
+class TestCanNotBeAEmptyStr:
 
     def test_validate_valid(self):
         data = {
-            'name': 'abc-abc'
+            'name': 'abc'
         }
         vmap = {
-            'name': StrShouldContains('-')
+            'name': CanNotBeAEmptyStr()
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -27,21 +27,21 @@ class TestStrShouldContains:
 
     def test_validate_invalid_default(self):
         data = {
-            'name': 'abcabc'
+            'name': ''
         }
         vmap = {
-            'name': StrShouldContains('-')
+            'name': CanNotBeAEmptyStr()
         }
         validator = Validator(vmap)
-        with pytest.raises(StrShouldContainsExc):
+        with pytest.raises(CanNotBeAEmptyStrExc):
             validator.validate(data)
 
     def test_validate_invalid_custom_exc(self):
         data = {
-            'name': 'abcabc'
+            'name': ''
         }
         vmap = {
-            'name': StrShouldContains('-', exc=CustomException('Testing'))
+            'name': CanNotBeAEmptyStr(exc=CustomException('Testing'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -50,10 +50,10 @@ class TestStrShouldContains:
     def test_validate_invalid_catch(self):
         exc_msg = 'Testing'
         data = {
-            'name': 'abcabc'
+            'name': ''
         }
         vmap = {
-            'name': Catch(StrShouldContains('-', exc=CustomException(exc_msg)))
+            'name': Catch(CanNotBeAEmptyStr(exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -67,7 +67,7 @@ class TestStrShouldContains:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': StrShouldContains('-')
+            'name': CanNotBeAEmptyStr()
         }
         validator = Validator(vmap)
         with pytest.raises(FieldDoesNotExistsExc):
@@ -78,7 +78,7 @@ class TestStrShouldContains:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': StrShouldContains('-', absent_field_exc=CustomException('Test'))
+            'name': CanNotBeAEmptyStr(absent_field_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -87,10 +87,10 @@ class TestStrShouldContains:
     def test_validate_absent_field_cacth(self):
         exc_msg = 'Testing'
         data = {
-            'name_diff': 'abcabc'
+            'name_diff': ''
         }
         vmap = {
-            'name': Catch(StrShouldContains('-', absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(CanNotBeAEmptyStr(absent_field_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -111,19 +111,19 @@ class TestStrShouldContains:
         }
         vmap = {
             'name': {
-                'name1': StrShouldContains('abc-abc-abc', valid_msg=valid_msg1),
-                'name2': StrShouldContains('-', valid_msg=valid_msg2),
-                'name3': [StrShouldContains('-', valid_msg=valid_msg1), StrShouldContains('-', valid_msg=valid_msg2)]
+                'name1': CanNotBeAEmptyStr(valid_msg=valid_msg1),
+                'name2': CanNotBeAEmptyStr(valid_msg=valid_msg2),
+                'name3': [CanNotBeAEmptyStr(valid_msg=valid_msg1), CanNotBeAEmptyStr(valid_msg=valid_msg2)]
 
             }
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
-        map_msgs = ValidationSerialized().map_msgs(result_map, root=True)
-        assert 'name.name1' in map_msgs.keys()
-        assert 'name.name2' in map_msgs.keys()
-        assert 'name.name3' in map_msgs.keys()
-        assert map_msgs['name.name1'] == valid_msg1
-        assert map_msgs['name.name2'] == valid_msg2
-        assert map_msgs['name.name3'][0] == valid_msg1
-        assert map_msgs['name.name3'][1] == valid_msg2
+        vmp = ValidationSerialized().map_msgs(result_map, root=True)
+        assert 'name.name1' in vmp.keys()
+        assert 'name.name2' in vmp.keys()
+        assert 'name.name3' in vmp.keys()
+        assert vmp['name.name1'] == valid_msg1
+        assert vmp['name.name2'] == valid_msg2
+        assert vmp['name.name3'][0] == valid_msg1
+        assert vmp['name.name3'][1] == valid_msg2

@@ -1,9 +1,9 @@
 
 
 from typing import Any
-from validathon.ivalidate import IValidation
+from validathon.validations.ivalidation import IValidation
 from validathon.validations.exceptions import RequiredExc
-from validathon.validation_result import ValidationResult
+from validathon.result import ValidationResult
 from validathon.config import REQUIRED_KEY
 
 

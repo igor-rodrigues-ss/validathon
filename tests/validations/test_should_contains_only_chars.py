@@ -1,22 +1,22 @@
 #!-*-coding:utf-8-*-
 
 import pytest
-from validathon import StrShouldContains
+from validathon import ShouldContainsOnlyChars
 from validathon.result import ValidationResult
-from validathon.exceptions import StrShouldContainsExc, FieldDoesNotExistsExc
+from validathon.exceptions import ShouldContainsOnlyCharsExc, FieldDoesNotExistsExc
 from validathon.validator import Validator
 from validathon import Catch, ValidationSerialized
 from tests.conftest import CustomException
 
 
-class TestStrShouldContains:
+class TestShouldContainsOnlyChars:
 
     def test_validate_valid(self):
         data = {
-            'name': 'abc-abc'
+            'name': 'abc'
         }
         vmap = {
-            'name': StrShouldContains('-')
+            'name': ShouldContainsOnlyChars()
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -27,21 +27,21 @@ class TestStrShouldContains:
 
     def test_validate_invalid_default(self):
         data = {
-            'name': 'abcabc'
+            'name': 'abc123'
         }
         vmap = {
-            'name': StrShouldContains('-')
+            'name': ShouldContainsOnlyChars()
         }
         validator = Validator(vmap)
-        with pytest.raises(StrShouldContainsExc):
+        with pytest.raises(ShouldContainsOnlyCharsExc):
             validator.validate(data)
 
     def test_validate_invalid_custom_exc(self):
         data = {
-            'name': 'abcabc'
+            'name': 'abc123'
         }
         vmap = {
-            'name': StrShouldContains('-', exc=CustomException('Testing'))
+            'name': ShouldContainsOnlyChars(exc=CustomException('Testing'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -50,10 +50,10 @@ class TestStrShouldContains:
     def test_validate_invalid_catch(self):
         exc_msg = 'Testing'
         data = {
-            'name': 'abcabc'
+            'name': 'abc###'
         }
         vmap = {
-            'name': Catch(StrShouldContains('-', exc=CustomException(exc_msg)))
+            'name': Catch(ShouldContainsOnlyChars(exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -67,7 +67,7 @@ class TestStrShouldContains:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': StrShouldContains('-')
+            'name': ShouldContainsOnlyChars()
         }
         validator = Validator(vmap)
         with pytest.raises(FieldDoesNotExistsExc):
@@ -78,7 +78,7 @@ class TestStrShouldContains:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': StrShouldContains('-', absent_field_exc=CustomException('Test'))
+            'name': ShouldContainsOnlyChars(absent_field_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -87,10 +87,10 @@ class TestStrShouldContains:
     def test_validate_absent_field_cacth(self):
         exc_msg = 'Testing'
         data = {
-            'name_diff': 'abcabc'
+            'name_diff': ''
         }
         vmap = {
-            'name': Catch(StrShouldContains('-', absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(ShouldContainsOnlyChars(absent_field_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -104,16 +104,16 @@ class TestStrShouldContains:
         valid_msg2 = 'Is Valid 2'
         data = {
             'name': {
-                'name1': 'abc-abc-abc-abc-abc-abc',
-                'name2': 'abc-abc',
-                'name3': 'abc-abc'
+                'name1': 'abc',
+                'name2': 'abc',
+                'name3': 'abc'
             }
         }
         vmap = {
             'name': {
-                'name1': StrShouldContains('abc-abc-abc', valid_msg=valid_msg1),
-                'name2': StrShouldContains('-', valid_msg=valid_msg2),
-                'name3': [StrShouldContains('-', valid_msg=valid_msg1), StrShouldContains('-', valid_msg=valid_msg2)]
+                'name1': ShouldContainsOnlyChars(valid_msg=valid_msg1),
+                'name2': ShouldContainsOnlyChars(valid_msg=valid_msg2),
+                'name3': [ShouldContainsOnlyChars(valid_msg=valid_msg1)]
 
             }
         }
@@ -126,4 +126,3 @@ class TestStrShouldContains:
         assert map_msgs['name.name1'] == valid_msg1
         assert map_msgs['name.name2'] == valid_msg2
         assert map_msgs['name.name3'][0] == valid_msg1
-        assert map_msgs['name.name3'][1] == valid_msg2

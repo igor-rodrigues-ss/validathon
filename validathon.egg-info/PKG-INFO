@@ -6,7 +6,14 @@ Home-page: https://github.com/igor-rodrigues-ss/vectorio
 Author: Igor Rodrigues Sousa Silva
 Author-email: igor.rodrigues.ss10@gmail.com
 License: UNKNOWN
-Description: UNKNOWN
+Description: 
+        
+        
+        
+        
+        
+        ### Details
+        - All default validations classes have a decorator for validate if field exists. And also is possible customize the exeception thougth paramer *absent_field_exc*. But, for that not need pass this argument for all validations. Use de *Required* class as the first validation. 
 Platform: UNKNOWN
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3.6

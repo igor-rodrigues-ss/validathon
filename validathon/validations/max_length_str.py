@@ -1,6 +1,6 @@
 #!-*-coding:utf-8-*-
 
-from validathon.ivalidate import IValidation
+from validathon.validations.ivalidation import IValidation
 from validathon.exceptions import MaxLengthStrExc
 from typing import Any
 

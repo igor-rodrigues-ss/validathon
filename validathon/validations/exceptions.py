@@ -1,6 +1,6 @@
 #!-*-coding:utf-8-*-
 
-from validathon.validation_result import ValidationResult
+from validathon.result import ValidationResult
 
 
 class ValidathonBaseException(Exception):
@@ -24,7 +24,7 @@ class RequiredExc(ValidathonBaseException):
     pass
 
 
-class FieldMustNotBeContainsNumbersExc(Exception):
+class ShouldContainsOnlyCharsExc(Exception):
     pass
 
 

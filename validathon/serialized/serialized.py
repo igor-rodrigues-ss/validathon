@@ -1,12 +1,14 @@
 #!-*-coding:utf-8-*-
-from validathon.serialized.types import VALIDATION_VALID, VALIDATION_INVALID, VALIDATION_VALID_INVALID
+from validathon.serialized.vtypes import (
+    VALIDATION_VALID, VALIDATION_INVALID, VALIDATION_VALID_INVALID
+)
 
 
 class ValidationSerialized:
 
     def create_list(self, output, v):
-        if v.field not in output.keys():
-            output[v.field] = []
+        if v.field_name not in output.keys():
+            output[v.field_name] = []
 
     def _validate(self, data: dict, output: dict, root: bool, serialize_type: str): # TODO: create a enum serialize_type
 
@@ -24,7 +26,7 @@ class ValidationSerialized:
                             if validation_result.valid:
                                 if root:
                                     self.create_list(output, v[0])
-                                    output[v[0].field].append(validation_result.msg)
+                                    output[v[0].field_name].append(validation_result.msg)
                                 else:
                                     if k not in output.keys():
                                         output[k] = []
@@ -34,7 +36,7 @@ class ValidationSerialized:
                             if validation_result.valid is False:
                                 if root:
                                     self.create_list(output, v[0])
-                                    output[v[0].field].append(validation_result.msg)
+                                    output[v[0].field_name].append(validation_result.msg)
                                 else:
                                     if k not in output.keys():
                                         output[k] = []
@@ -42,7 +44,7 @@ class ValidationSerialized:
                         else:
                             if root:
                                 self.create_list(output, v[0])
-                                output[v[0].field].append(validation_result.msg)
+                                output[v[0].field_name].append(validation_result.msg)
                             else:
                                 if k not in output.keys():
                                     output[k] = []
@@ -52,19 +54,19 @@ class ValidationSerialized:
                     if serialize_type == VALIDATION_VALID:
                         if v.valid:
                             if root:
-                                output[v.field] = v.msg
+                                output[v.field_name] = v.msg
                             else:
                                 output[k] = v.msg
 
                     elif serialize_type == VALIDATION_INVALID:
                         if v.valid is False:
                             if root:
-                                output[v.field] = v.msg
+                                output[v.field_name] = v.msg
                             else:
                                 output[k] = v.msg
                     else:
                         if root:
-                            output[v.field] = v.msg
+                            output[v.field_name] = v.msg
                         else:
                             output[k] = v.msg
 

@@ -1,8 +1,8 @@
 #!-*-coding:utf-8-*-
 from validathon import StrShouldContains, ValidationSerialized, Catch
-from validathon.validathon import Validathon
+from validathon.validator import Validator
 from tests.conftest import CustomException
-from validathon.types import VALIDATION_VALID, VALIDATION_INVALID
+from validathon.vtypes import VALIDATION_VALID, VALIDATION_INVALID
 
 
 class TestValidationSerialized:
@@ -29,7 +29,7 @@ class TestValidationSerialized:
 
             }
         }
-        self.result_map = Validathon(vmap).validate(data)
+        self.result_map = Validator(vmap).validate(data)
 
     def test_field_and_msgs_root_true_valid_invalid(self):
         vmp = ValidationSerialized().map_msgs(self.result_map, root=True)

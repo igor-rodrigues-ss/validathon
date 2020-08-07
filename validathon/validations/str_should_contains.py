@@ -2,9 +2,9 @@
 
 from typing import Any
 from validathon.decorators.absent_field_validated import AbsentFieldValidated
-from validathon.ivalidate import IValidation
+from validathon.validations.ivalidation import IValidation
 from validathon.validations.exceptions import StrShouldContainsExc
-from validathon.validation_result import ValidationResult
+from validathon.result import ValidationResult
 
 
 @AbsentFieldValidated
@@ -21,9 +21,9 @@ class StrShouldContains(IValidation):
             if bool(self._custom_exc):
                 raise self._custom_exc
             raise StrShouldContainsExc(
-                ValidationResult(field=key, msg=f'Field "{key}" not contains "{self._string}".', valid=False)
+                ValidationResult(field_name=key, msg=f'Field "{key}" not contains "{self._string}".', valid=False)
             )
-        return ValidationResult(field=key, msg=self._valid_msg, valid=True, validation=self)  # TODO: validation=self  necessry?
+        return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)
 
     def __repr__(self):
         if len(self._string) > 10:
