@@ -1,6 +1,6 @@
 #!-*-coding:utf-8-*-
 
-from validathon.decorators.absent_field_validated import AbsentFieldValidated
+from validathon.absent_field.decorator import AbsentFieldValidated
 from validathon.result import ValidationResult
 from validathon.validations.ivalidation import IValidation
 from validathon.exceptions import ShouldContainsOnlyCharsExc

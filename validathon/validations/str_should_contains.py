@@ -1,7 +1,7 @@
 
 
 from typing import Any
-from validathon.decorators.absent_field_validated import AbsentFieldValidated
+from validathon.absent_field.decorator import AbsentFieldValidated
 from validathon.validations.ivalidation import IValidation
 from validathon.validations.exceptions import StrShouldContainsExc
 from validathon.result import ValidationResult

@@ -1,6 +1,6 @@
 
 
-from validathon.config import REQUIRED_KEY
+from validathon.config import VALUE_FOR_ABSENT_FIELD
 
 
 """
@@ -25,7 +25,7 @@ class Validator:
         old_key = path_keys
         for key_map, validations in validation_map.items():
             path_keys = self._father_field(old_key, key_map)
-            item_to_val = data.get(key_map, REQUIRED_KEY)
+            item_to_val = data.get(key_map, VALUE_FOR_ABSENT_FIELD)
 
             if isinstance(validations, dict):
 
@@ -50,7 +50,9 @@ if __name__ == '__main__':
 
     from validathon import StrShouldContains
     vmap = {
-        'name': StrShouldContains('-', raise_absent_field=False) # Create unity tests for this argument
+        'name': StrShouldContains('-', validate_for_absent=False) # Create unity tests for this argument
+        # if validate_for_absent is False, case the field does not exist,
+        # not will be validated with Required validation.
     }
     data = {
         'name1': 'abc-'

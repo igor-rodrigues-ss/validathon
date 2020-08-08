@@ -2,7 +2,7 @@
 from validathon import StrShouldContains, ValidationSerialized, Catch
 from validathon.validator import Validator
 from tests.conftest import CustomException
-from validathon.vtypes import VALIDATION_VALID, VALIDATION_INVALID
+from validathon.vtypes import VALIDATION_VALID, VALIDATION_INVALID, NOT_VALIDATED
 
 
 class TestValidationSerialized:
@@ -31,7 +31,7 @@ class TestValidationSerialized:
         }
         self.result_map = Validator(vmap).validate(data)
 
-    def test_field_and_msgs_root_true_valid_invalid(self):
+    def test_map_msgs_root_true_valid_invalid(self):
         vmp = ValidationSerialized().map_msgs(self.result_map, root=True)
         assert 'name.name1' in vmp.keys()
         assert 'name.name2' in vmp.keys()
@@ -41,7 +41,7 @@ class TestValidationSerialized:
         assert vmp['name.name3'][0] == self.valid_msg1
         assert vmp['name.name3'][1] == self.valid_msg2
 
-    def test_field_and_msgs_root_false_valid_invalid(self):
+    def test_map_msgs_root_false_valid_invalid(self):
         map_msg = ValidationSerialized().map_msgs(self.result_map, root=False)
         assert 'name' in map_msg.keys()
         assert 'name1' in map_msg['name'].keys()
@@ -52,14 +52,27 @@ class TestValidationSerialized:
         assert map_msg['name']['name3'][0] == self.valid_msg1
         assert map_msg['name']['name3'][1] == self.valid_msg2
 
-    def test_field_and_msgs_root_true_valid(self):
+    def test_map_msgs_root_true_valid(self):
         map_msg = ValidationSerialized().map_msgs(self.result_map, root=True, only=VALIDATION_VALID)
         assert 'name.name1' not in map_msg.keys()  # This is invalid
         assert 'name.name2' in map_msg.keys()
         assert 'name.name3' in map_msg.keys()
 
-    def test_field_and_msgs_root_true_invalid(self):
+    def test_map_msgs_root_true_invalid(self):
         map_msg = ValidationSerialized().map_msgs(self.result_map, root=True, only=VALIDATION_INVALID)
         assert 'name.name1' in map_msg.keys()
         assert 'name.name2' not in map_msg.keys()  # This is valid
         assert 'name.name3' not in map_msg.keys()  # This is valid
+
+    def test_map_msgs_root_true_only_not_validated(self):
+        data = {
+            'name': 'abcabc'
+        }
+        vmap = {
+            'name1': StrShouldContains('-', validate_for_absent=False)
+        }
+        validator = Validator(vmap)
+        result_map = validator.validate(data)
+        map_msg = ValidationSerialized().map_msgs(result_map, root=True, only=NOT_VALIDATED)
+        assert 'name1' in map_msg.keys()
+        assert map_msg['name1'] in 'Not Validated. Field "name1" does not exists.'

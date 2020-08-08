@@ -127,3 +127,16 @@ class TestStrShouldContains:
         assert map_msgs['name.name2'] == valid_msg2
         assert map_msgs['name.name3'][0] == valid_msg1
         assert map_msgs['name.name3'][1] == valid_msg2
+
+    def test_not_validate_if_absent_field(self):
+        data = {
+            'name': 'abcabc'
+        }
+        vmap = {
+            'name1': StrShouldContains('-', validate_for_absent=False)
+        }
+        validator = Validator(vmap)
+        result_map = validator.validate(data)
+        assert 'name1' in result_map.keys()
+        assert result_map['name1'].valid is None
+        assert result_map['name1'].field_name is 'name1'
