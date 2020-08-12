@@ -78,7 +78,7 @@ class TestShouldBeInt:
             'name_diff': 'abc'
         }
         vmap = {
-            'name': ShouldBeInt(absent_field_exc=CustomException('Test'))
+            'name': ShouldBeInt(required_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -90,7 +90,7 @@ class TestShouldBeInt:
             'name_diff': 'abc'
         }
         vmap = {
-            'name': Catch(ShouldBeInt(absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(ShouldBeInt(required_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -132,7 +132,7 @@ class TestShouldBeInt:
             'num': 123
         }
         vmap = {
-            'num1': ShouldBeInt(validate_for_absent=False)
+            'num1': ShouldBeInt(required=False)
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)

@@ -69,7 +69,7 @@ class TestValidationSerialized:
             'name': 'abcabc'
         }
         vmap = {
-            'name1': StrShouldContains('-', validate_for_absent=False)
+            'name1': StrShouldContains('-', required=False)
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)

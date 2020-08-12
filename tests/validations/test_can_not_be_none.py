@@ -78,7 +78,7 @@ class TestCanNotBeNone:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': CanNotBeNone(absent_field_exc=CustomException('Test'))
+            'name': CanNotBeNone(required_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -90,7 +90,7 @@ class TestCanNotBeNone:
             'name_diff': ''
         }
         vmap = {
-            'name': Catch(CanNotBeNone(absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(CanNotBeNone(required_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -132,7 +132,7 @@ class TestCanNotBeNone:
             'name': 'abcabc'
         }
         vmap = {
-            'name1': CanNotBeNone(validate_for_absent=False)
+            'name1': CanNotBeNone(required=False)
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)

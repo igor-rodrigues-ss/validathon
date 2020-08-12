@@ -11,7 +11,7 @@ class Required(IValidation):
 
     _custom_exc: Exception
 
-    def __init__(self, exc: Exception = None, valid_msg=''):
+    def __init__(self, exc: Exception = None, valid_msg: str = ''):
         self._custom_exc = exc
         self._valid_msg = valid_msg
 
@@ -20,6 +20,6 @@ class Required(IValidation):
             if bool(self._custom_exc):
                 raise self._custom_exc
             raise RequiredExc(
-                ValidationResult(field=key, msg=f'Field "{key}" does not exists.', valid=False)
+                ValidationResult(field_name=key, msg=f'Field "{key}" does not exists.', valid=False)
             )
-        return ValidationResult(field=key, msg=self._valid_msg, valid=True, validation=self)
+        return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)

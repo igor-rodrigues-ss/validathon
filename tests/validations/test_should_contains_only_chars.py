@@ -78,7 +78,7 @@ class TestShouldContainsOnlyChars:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': ShouldContainsOnlyChars(absent_field_exc=CustomException('Test'))
+            'name': ShouldContainsOnlyChars(required_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -90,7 +90,7 @@ class TestShouldContainsOnlyChars:
             'name_diff': ''
         }
         vmap = {
-            'name': Catch(ShouldContainsOnlyChars(absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(ShouldContainsOnlyChars(required_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -132,7 +132,7 @@ class TestShouldContainsOnlyChars:
             'name': 'abcabc'
         }
         vmap = {
-            'name1': ShouldContainsOnlyChars(validate_for_absent=False)
+            'name1': ShouldContainsOnlyChars(required=False)
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)

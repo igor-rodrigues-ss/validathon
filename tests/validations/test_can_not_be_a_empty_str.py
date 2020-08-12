@@ -78,7 +78,7 @@ class TestCanNotBeAEmptyStr:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': CanNotBeAEmptyStr(absent_field_exc=CustomException('Test'))
+            'name': CanNotBeAEmptyStr(required_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -90,7 +90,7 @@ class TestCanNotBeAEmptyStr:
             'name_diff': ''
         }
         vmap = {
-            'name': Catch(CanNotBeAEmptyStr(absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(CanNotBeAEmptyStr(required_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -133,7 +133,7 @@ class TestCanNotBeAEmptyStr:
             'name': 'abcabc'
         }
         vmap = {
-            'name1': CanNotBeAEmptyStr(validate_for_absent=False)
+            'name1': CanNotBeAEmptyStr(required=False)
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)

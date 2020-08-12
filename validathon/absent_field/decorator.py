@@ -13,18 +13,18 @@ class AbsentFieldValidated:
         self._validation_clss = clss
 
     def __call__(self, *args, **kwargs):
-        absent_field_exc = None
-        validate_for_absent = True
+        required_exc = None
+        required = True
 
-        if 'absent_field_exc' in kwargs.keys():
-            absent_field_exc = kwargs.pop('absent_field_exc')
+        if 'required_exc' in kwargs.keys():
+            required_exc = kwargs.pop('required_exc')
 
-        if 'validate_for_absent' in kwargs.keys():
-            validate_for_absent = kwargs.pop('validate_for_absent')
+        if 'required' in kwargs.keys():
+            required = kwargs.pop('required')
 
-        if validate_for_absent:
+        if required:
             return AbsentFieldValidatedImpl(
-                self._validation_clss(*args, **kwargs), absent_field_exc
+                self._validation_clss(*args, **kwargs), required_exc
             )
         return AbsentFieldIgnored(
             self._validation_clss(*args, **kwargs)

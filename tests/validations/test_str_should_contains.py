@@ -78,7 +78,7 @@ class TestStrShouldContains:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': StrShouldContains('-', absent_field_exc=CustomException('Test'))
+            'name': StrShouldContains('-', required_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -90,7 +90,7 @@ class TestStrShouldContains:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': Catch(StrShouldContains('-', absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(StrShouldContains('-', required_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -133,7 +133,7 @@ class TestStrShouldContains:
             'name': 'abcabc'
         }
         vmap = {
-            'name1': StrShouldContains('-', validate_for_absent=False)
+            'name1': StrShouldContains('-', required=False)
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)

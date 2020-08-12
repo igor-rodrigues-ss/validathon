@@ -10,16 +10,16 @@ from validathon.config import VALUE_FOR_ABSENT_FIELD
 class AbsentFieldValidated(IValidation):
 
     _validation: Type[IValidation]
-    _absent_field_exc: Exception
+    _required_exc: Exception
 
-    def __init__(self, validation: Type[IValidation], absent_field_exc: Exception = None):
+    def __init__(self, validation: Type[IValidation], required_exc: Exception = None):
         self._validation = validation
-        self._absent_field_exc = absent_field_exc
+        self._required_exc = required_exc
 
     def _field_does_not_exists(self, key, value):
         if value == VALUE_FOR_ABSENT_FIELD:
-            if bool(self._absent_field_exc):
-                raise self._absent_field_exc
+            if bool(self._required_exc):
+                raise self._required_exc
             raise FieldDoesNotExistsExc(
                 ValidationResult(field_name=key, msg=f'Not validated. Field "{key}" does not exists.', valid=False)
             )

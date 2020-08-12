@@ -78,7 +78,7 @@ class TestMaxLengthStr:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': MaxLengthStr(4, absent_field_exc=CustomException('Test'))
+            'name': MaxLengthStr(4, required_exc=CustomException('Test'))
         }
         validator = Validator(vmap)
         with pytest.raises(CustomException):
@@ -90,7 +90,7 @@ class TestMaxLengthStr:
             'name_diff': 'abcabc'
         }
         vmap = {
-            'name': Catch(MaxLengthStr(4, absent_field_exc=CustomException(exc_msg)))
+            'name': Catch(MaxLengthStr(4, required_exc=CustomException(exc_msg)))
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
@@ -133,7 +133,7 @@ class TestMaxLengthStr:
             'name': 'abcabc'
         }
         vmap = {
-            'name1': MaxLengthStr(30, validate_for_absent=False)
+            'name1': MaxLengthStr(30, required=False)
         }
         validator = Validator(vmap)
         result_map = validator.validate(data)
