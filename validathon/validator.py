@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     from validathon import StrShouldContains
     vmap = {
-        'name': StrShouldContains('-', validate_for_absent=False) # Create unity tests for this argument
+        'name': StrShouldContains('-', validate_for_absent=False)
         # if validate_for_absent is False, case the field does not exist,
         # not will be validated with Required validation.
     }
@@ -58,4 +58,3 @@ if __name__ == '__main__':
         'name1': 'abc-'
     }
     validator = Validator(vmap)
-    print(validator.validate(data))
