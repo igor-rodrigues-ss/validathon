@@ -1,5 +1,7 @@
 #!-*-coding:utf-8-*-
-from validathon import StrShouldContains, ValidationSerialized, Catch
+from validathon.validations import StrShouldContains
+from validathon.catch import Catch
+from validathon.serialized import ValidationSerialized
 from validathon.validator import Validator
 from tests.conftest import CustomException
 from validathon.vtypes import VALIDATION_VALID, VALIDATION_INVALID, NOT_VALIDATED

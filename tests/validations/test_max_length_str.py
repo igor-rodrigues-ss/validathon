@@ -1,11 +1,12 @@
 #!-*-coding:utf-8-*-
 
 import pytest
-from validathon import MaxLengthStr
+from validathon.validations import MaxLengthStr
 from validathon.result import ValidationResult
 from validathon.exceptions import MaxLengthStrExc, FieldDoesNotExistsExc
 from validathon.validator import Validator
-from validathon import Catch, ValidationSerialized
+from validathon.catch import Catch
+from validathon.serialized import ValidationSerialized
 from tests.conftest import CustomException
 
 

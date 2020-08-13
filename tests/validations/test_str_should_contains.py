@@ -1,11 +1,12 @@
 #!-*-coding:utf-8-*-
 
 import pytest
-from validathon import StrShouldContains
+from validathon.validations import StrShouldContains
 from validathon.result import ValidationResult
 from validathon.exceptions import StrShouldContainsExc, FieldDoesNotExistsExc
 from validathon.validator import Validator
-from validathon import Catch, ValidationSerialized
+from validathon.catch import Catch
+from validathon.serialized import ValidationSerialized
 from tests.conftest import CustomException
 
 
