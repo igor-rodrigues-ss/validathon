@@ -15,7 +15,7 @@ class CanNotBeNone(IValidation):
         self._exc = exc
         self._valid_msg = valid_msg
 
-    def validate(self, key: str, value: Any):
+    def validate(self, key: str, value: Any) -> ValidationResult:
         if value is None:
             if bool(self._exc):
                 raise self._exc

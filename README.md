@@ -2,18 +2,58 @@
 
 ## Library for data validation customizable and able to raise external exceptions.
 
+
+
+- Resume
 - Quick start
     - Valid Data
     - Invalid Data
     - Invalid Data with custom exception
-    - Catch exception
+    - Invalid Data and catch error
 
 - Serializing ValidationResult
 - Create your own validation
 - Avalable Validations
 
+#### Resume
+
+The Validathon library is a tool to make data validations in python dictionaries. This tool have a lot of validation object and perform recursivly validations over dictionaries. This tool have a customizable strutucture for that de developer create your own validations.
+
+The differential of the *Validathon* is the possibility of the inject a exception object for itself library raise if data is invalid. **Then, case you is developing a web application (independent of the framework - Django, flask, aiohttp and etc.) and want raise a HTTPException just use the *exc* attribute passing as value the exception object from validation object**. 
+
+
+#### Details
+
+##### Default behavior
+
+- Case the data is valid, the *validator.validate* return a dictionary (with same structure from validated data) with *ValidationResult* objects, Case is invalid a exception will be raised. [example](#invalid-data).
+
+- Case you not want that a exception be raised, use the *Validation* object as argument to *Cacth* object. [example](#invalid-data-catch-error-and-returning-a-information-object).
+
+- By defaut the validation object will be validate a field even though it doesn't exist. if you want that validation be optional, pass the value *False* for *required* parameter in validation object.
+When the validation is optional and the field does not exists, will be returned a *ValidationResult* object with attribute *valid=None*.
+
+- If a validation object have a *required=True* (this is the default value case required is ommited)
+the validation will be perform and will fail, will be raised a *FieldDoesNotExistsExc* exception. Is possible inject a custom exception case the field dos not exists using the paramenter *required_exc=CustomException()*. For that you not have inject this exception for all validation objects, use the "Required(exc=CustomException())" object for validate if the field exists or no.
+
+- By default, case the data validated is valid a ValidationResult will be returned with attriutes:
+    - valid = True
+    - msg = ''
+    - field_name = 'name of field validated'
+    - validation = 'instance of validation'
+
+- If you want add a custom message when the data validation is valid just pass the string for *valid_msg* (*valid_msg='data is valid'*) parameter in Validation object.
+
+##### Customized Validations
+
+- All validation object are decorated by *AbsentFieldValidation*. This decorator is responsible for make validation if field does not exists or ignore the validation case be optional. If you create your own validations use this decorator you should decorte your validation with this decorator. [Example]( #create-your-own-validation). The parameters of validation object used in this decorator are:
+    - *required: bool = True* should be used as kwarg.
+    - *required_exc: Exception = None* should be used as kwarg.
+
+- all validations implements de *IValidation* interface. This interface standardize the behavior of validation. Case you want create your own validation, you validation class should be implements this interface.
 
 #### Quick start
+
 
 ##### Valid Data
 
@@ -181,11 +221,8 @@ print(invalids)
 #### Create your own validation
 
 - For create your own validation you need use two resources:
-    - Use and respect the IValidation Interface - (DESCRIBE)
-    - Use de AbsentFieldValidation decorator. (Optional) - DESCRIBE
-
-- By default you validation should be exception case the data is invalida, because in this form will be possible use Catch class
-
+    - Use and respect the IValidation Interface.
+    - Use de AbsentFieldValidation decorator.
 
 ```python
 from validathon.validations.ivalidation import IValidation
@@ -199,7 +236,7 @@ class MyCustomValidation(IValidation):
 
     def validate(self, key: str, value: Any) -> ValidationResult:
         if isinstance(value, list):
-            raise Exception(f'Field "{key}" not should be a list.') # Should be only exception or HTTPException from your framework
+            raise Exception(f'Field "{key}" not should be a list.') # can be a base exception or a HTTPException from your framework
 
         return ValidationResult(field_name=key, msg='', valid=True, validation=self)
 
@@ -233,6 +270,8 @@ from validathon.exceptions import ValidathonBaseException
 
 #### Avalable Validations
 
+All validations are present in module *validathon.validations*.
+
 - MinLengthStr
 - MaxLengthStr
 - CanNotBeAEmptyStr
@@ -241,23 +280,4 @@ from validathon.exceptions import ValidathonBaseException
 - ShouldContainsOnlyChars
 - StrShouldContains
 - Required
-
-
-
-
-- The returning object keep the data dictionary structure
-- Case you want catch the exception from wach validation you should be pass the validation instance as argumento for Catch object.
-
-
-- TODO:
-- Describe the validation order
-- required field in each validation
-- required validations
-- custom exception from required validation for specific validation
-- how required validation works
-- AbsentFieldValidation decorator
-- Creating a new validations, IValidation Interface 
-### Details
-- All default validations classes have a decorator for validate if field exists. And also is possible customize the exeception thougth paramer *absent_field_exc*. But, for that not need pass this argument for all validations. Use de *Required* class as the first validation.
-
  

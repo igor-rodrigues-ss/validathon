@@ -16,7 +16,7 @@ class ShouldContainsOnlyChars(IValidation):
         self._exc = exc
         self._valid_msg = valid_msg
 
-    def validate(self, key: str, value: Any):
+    def validate(self, key: str, value: Any) -> ValidationResult:
         value = str(value)
         if not value.isalpha():
             if bool(self._exc):
