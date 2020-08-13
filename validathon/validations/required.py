@@ -20,6 +20,8 @@ class Required(IValidation):
             if bool(self._custom_exc):
                 raise self._custom_exc
             raise RequiredExc(
-                ValidationResult(field_name=key, msg=f'Field "{key}" does not exists.', valid=False)
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" does not exists.', valid=False, validation=self
+                )
             )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)

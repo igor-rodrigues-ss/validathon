@@ -23,7 +23,12 @@ class MinLengthStr(IValidation):
         if len(value) < self._min_len:
             if bool(self._exc):
                 raise self._exc
-            raise MinLengthStrExc(f'Field "{key}" must be at least "{self._min_len}" characters.')
+            raise MinLengthStrExc(
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" must be at least "{self._min_len}" characters.',
+                    valid=False, validation=self
+                )
+            )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)
 
     def __repr__(self):

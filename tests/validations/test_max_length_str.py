@@ -34,8 +34,12 @@ class TestMaxLengthStr:
             'name': MaxLengthStr(4)
         }
         validator = Validator(vmap)
-        with pytest.raises(MaxLengthStrExc):
+        with pytest.raises(MaxLengthStrExc) as exc:
             validator.validate(data)
+
+        assert isinstance(exc.value.validation_result, ValidationResult)
+        assert exc.value.validation_result.field_name == 'name'
+        assert exc.value.validation_result.valid is False
 
     def test_validate_invalid_custom_exc(self):
         data = {

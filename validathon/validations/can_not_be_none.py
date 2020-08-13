@@ -19,6 +19,11 @@ class CanNotBeNone(IValidation):
         if value is None:
             if bool(self._exc):
                 raise self._exc
-            raise CanNotBeNoneExc(f'Field "{key}" cannot have a None value.')
+            raise CanNotBeNoneExc(
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" cannot have a None value.',
+                    valid=False, validation=self
+                )
+            )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)
 

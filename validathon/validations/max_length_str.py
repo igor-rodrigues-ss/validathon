@@ -23,7 +23,12 @@ class MaxLengthStr(IValidation):
         if len(value) > self._max_len:
             if bool(self._exc):
                 raise self._exc
-            raise MaxLengthStrExc(f'Field "{key}" should be contains at most "{self._max_len}" characters.')
+            raise MaxLengthStrExc(
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" should be contains at most "{self._max_len}" characters.',
+                    valid=False, validation=self
+                )
+            )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)
 
     def __repr__(self):

@@ -20,7 +20,12 @@ class CanNotBeAEmptyStr(IValidation):
         if value == '':
             if bool(self._exc):
                 raise self._exc
-            raise CanNotBeAEmptyStrExc(f'Field "{key}" can not be a empty string.')
+            raise CanNotBeAEmptyStrExc(
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" can not be a empty string.',
+                    valid=False, validation=self
+                )
+            )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)
 
     def __repr__(self):

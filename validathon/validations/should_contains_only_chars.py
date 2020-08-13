@@ -21,5 +21,10 @@ class ShouldContainsOnlyChars(IValidation):
         if not value.isalpha():
             if bool(self._exc):
                 raise self._exc
-            raise ShouldContainsOnlyCharsExc(f'Field "{key}" must contains only characters.')
+            raise ShouldContainsOnlyCharsExc(
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" must contains only characters.',
+                    valid=False, validation=self
+                )
+            )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)

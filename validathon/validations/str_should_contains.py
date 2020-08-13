@@ -10,7 +10,7 @@ from validathon.result import ValidationResult
 @AbsentFieldValidated
 class StrShouldContains(IValidation):
 
-    def __init__(self, string: str, exc: Exception = None, valid_msg: str = '', absent_field_exc: Exception = None):
+    def __init__(self, string: str, exc: Exception = None, valid_msg: str = ''):
         self._custom_exc = exc
         self._string = string
         self._valid_msg = valid_msg
@@ -21,7 +21,9 @@ class StrShouldContains(IValidation):
             if bool(self._custom_exc):
                 raise self._custom_exc
             raise StrShouldContainsExc(
-                ValidationResult(field_name=key, msg=f'Field "{key}" not contains "{self._string}".', valid=False)
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" not contains "{self._string}".', valid=False, validation=self
+                )
             )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)
 

@@ -24,31 +24,27 @@ class RequiredExc(ValidathonBaseException):
     pass
 
 
-class ShouldContainsOnlyCharsExc(Exception):
+class ShouldContainsOnlyCharsExc(ValidathonBaseException):
     pass
 
 
-class MinLengthStrExc(Exception):
+class MinLengthStrExc(ValidathonBaseException):
     pass
 
 
-class MaxLengthStrExc(Exception):
+class MaxLengthStrExc(ValidathonBaseException):
     pass
 
 
-class ShouldBeIntExc(Exception):
+class ShouldBeIntExc(ValidathonBaseException):
     pass
 
 
-class CanNotBeAEmptyStrExc(Exception):
+class CanNotBeAEmptyStrExc(ValidathonBaseException):
     pass
 
 
-class CanNotBeNoneExc(Exception):
-    pass
-
-
-class ShouldBeAValidEmailExc(Exception):
+class CanNotBeNoneExc(ValidathonBaseException):
     pass
 
 

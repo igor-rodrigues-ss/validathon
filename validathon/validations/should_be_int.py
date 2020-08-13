@@ -21,7 +21,12 @@ class ShouldBeInt(IValidation):
         if not isinstance(value, int):
             if bool(self._exc):
                 raise self._exc
-            raise ShouldBeIntExc(f'Field "{key}" must have a integer value.')
+            raise ShouldBeIntExc(
+                ValidationResult(
+                    field_name=key, msg=f'Field "{key}" must have a integer value.',
+                    valid=False, validation=self
+                )
+            )
         return ValidationResult(field_name=key, msg=self._valid_msg, valid=True, validation=self)
 
     def __repr__(self):
