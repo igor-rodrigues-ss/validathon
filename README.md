@@ -34,7 +34,7 @@ The differential of the *Validathon* is the possibility of the inject a exceptio
 When the validation is optional and the field does not exists, will be returned a *ValidationResult* object with attribute *valid=None*.
 
 - If a validation object have a *required=True* (this is the default value case required is ommited)
-the validation will be perform and will fail, will be raised a *FieldDoesNotExistsExc* exception. Is possible inject a custom exception case the field dos not exists using the paramenter *required_exc=CustomException()*. For that you not have inject this exception for all validation objects, use the "Required(exc=CustomException())" object for validate if the field exists or no.
+the validation will be perform and will fail, will be raised a *FieldDoesNotExistsExc* exception. Is possible inject a custom exception case the field dos not exists using the paramenter *required_exc=CustomException()*. For that you not have inject this exception for all validation objects, use the *Required(exc=CustomException())* object for validate if the field exists or no.
 
 - By default, case the data validated is valid a ValidationResult will be returned with attriutes:
     - valid = True
@@ -43,6 +43,9 @@ the validation will be perform and will fail, will be raised a *FieldDoesNotExis
     - validation = 'instance of validation'
 
 - If you want add a custom message when the data validation is valid just pass the string for *valid_msg* (*valid_msg='data is valid'*) parameter in Validation object.
+
+
+- When the data is invalid will be raised the default exception. All default exception has the name of Validation class with *exc* suffix. Example: The default exception from *MinLengthStr* validation is **MinLengthStrExc**.
 
 ##### Customized Validations
 
@@ -272,12 +275,38 @@ from validathon.exceptions import ValidathonBaseException
 
 All validations are present in module *validathon.validations*.
 
+All validation objects can be receive the kwargs parameter **required** and / or **required_exc** but, these arguments are be from decorator *AbsentFieldValidated* and no from Validation object.
+
 - MinLengthStr
+```python
+MinLengthStr(min_len: int, exc: Exception = None, valid_msg: str = '')
+```
 - MaxLengthStr
+```python
+MaxLengthStr(max_len: int, exc: Exception = None, valid_msg: str = '')
+```
 - CanNotBeAEmptyStr
+```python
+CanNotBeAEmptyStr(exc: Exception = None, valid_msg: str = '')
+```
 - CanNotBeNone
+```python
+CanNotBeNone(exc: Exception = None, valid_msg: str = '')
+```
 - ShouldBeInt
+```python
+ShouldBeInt(exc: Exception = None, valid_msg: str = '')
+```
 - ShouldContainsOnlyChars
+```python
+ShouldContainsOnlyChars(exc: Exception = None, valid_msg: str = '')
+```
 - StrShouldContains
+```python
+StrShouldContains(string: str, exc: Exception = None, valid_msg: str = '')
+```
 - Required
+```python
+Required(exc: Exception = None, valid_msg: str = '')
+```
  
