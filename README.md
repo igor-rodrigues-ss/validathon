@@ -4,16 +4,16 @@
 
 
 
-- Resume
-- Quick start
+- [Resume](#resume)
+- [Quick start](#quick-start)
     - Valid Data
     - Invalid Data
     - Invalid Data with custom exception
-    - Invalid Data and catch error
+    - Invalid Data and catch error (Not Raise Exception)
 
-- Serializing ValidationResult
-- Create your own validation
-- Avalable Validations
+- [Serializing Result of Validation](#serializing-result-of-validation)
+- [Create your own validation](#create-your-own-validation)
+- [Available Validations](#available-validations)
 
 #### Resume
 
@@ -33,19 +33,17 @@ The differential of the *Validathon* is the possibility of the inject a exceptio
 - By defaut the validation object will be validate a field even though it doesn't exist. if you want that validation be optional, pass the value *False* for *required* parameter in validation object.
 When the validation is optional and the field does not exists, will be returned a *ValidationResult* object with attribute *valid=None*.
 
-- If a validation object have a *required=True* (this is the default value case required is ommited)
-the validation will be perform and will fail, will be raised a *FieldDoesNotExistsExc* exception. Is possible inject a custom exception case the field dos not exists using the paramenter *required_exc=CustomException()*. For that you not have inject this exception for all validation objects, use the *Required(exc=CustomException())* object for validate if the field exists or no.
-
 - By default, case the data validated is valid a ValidationResult will be returned with attriutes:
-    - valid = True
-    - msg = ''
-    - field_name = 'name of field validated'
-    - validation = 'instance of validation'
+    - **valid**: Boolean or None. Will be None if data not is validated
+    - **msg**: Message from validation
+    - **field_name**: name of field validated
+    - **validation**: instance of validation
 
 - If you want add a custom message when the data validation is valid just pass the string for *valid_msg* (*valid_msg='data is valid'*) parameter in Validation object.
 
-
 - When the data is invalid will be raised the default exception. All default exception has the name of Validation class with *exc* suffix. Example: The default exception from *MinLengthStr* validation is **MinLengthStrExc**.
+
+- By default, all default exceptions has a attribute *validation_result* that contains the data of validations.
 
 ##### Customized Validations
 
@@ -55,12 +53,17 @@ the validation will be perform and will fail, will be raised a *FieldDoesNotExis
 
 - all validations implements de *IValidation* interface. This interface standardize the behavior of validation. Case you want create your own validation, you validation class should be implements this interface.
 
+##### Required (For absent fields in data dicitionary)
+
+- If a validation object have a *required=True* (this is the default value case required is ommited)
+the validation will be perform and will fail, will be raised a *FieldDoesNotExistsExc* exception. Is possible inject a custom exception case the field dos not exists using the paramenter *required_exc=CustomException()*. For that you not have inject this exception for all validation objects, use the *Required(exc=CustomException())* object for validate if the field exists or no.
+
 #### Quick start
 
 
 ##### Valid Data
 
-- If data is valid the validationResult.msg is empty
+- If data is valid the *validationResult.msg* is empty. Case you want add a custom message for a valid data junt set the message for *valid_msg* parameter in ValidationObject.
 
 ```python
 from validathon.validator import Validator
@@ -83,6 +86,7 @@ vmap = {
 }
 validator = Validator(vmap)
 vresult = validator.validate(data)
+print(vresult)
 ```
 
 ##### Invalid Data
@@ -109,7 +113,7 @@ vmap = {
     } 
 }
 validator = Validator(vmap)
-validator.validate(data) # raise default Exception (MinLengthStrExc) for this validation 
+validator.validate(data)  # raise default Exception (MinLengthStrExc) for this validation 
 ```
 
 ##### Invalid Data with Custom Exception
@@ -138,19 +142,19 @@ vmap = {
     } 
 }
 validator = Validator(vmap)
-validator.validate(data) # raise default Exception (MinLengthStrExc) for this validation 
+validator.validate(data) # Raise CustomException
 ```
 
 
-##### Invalid Data: Catch error and returning a information object
+##### Invalid Data and Catch Error (Not Raise Exception)
+
 ```python
 from validathon.validator import Validator
 from validathon.validations import MinLengthStr
 from validathon.catch import Catch
 
 
-
-class CustomException(Exception): # Can be a HTTP Exception from some web framework. (Django, Flaskm aiohttp etc....)
+class CustomException(Exception):  # Can be a HTTPException from some web framework. (Django, Flask aiohttp, etc....)
 
     def __init__(self):
         super().__init__('My HTTP Exception') 
@@ -177,7 +181,7 @@ print('Exc MSG:', vresult['person']['name'].msg)
 ```
 
 
-#### Serializing Result
+#### Serializing Result of Validation
 
 
 ##### Invalid Data
@@ -207,17 +211,16 @@ vmap = {
 }
 validator = Validator(vmap)
 vresult = validator.validate(data)
-all_validations = ValidationSerialized().map_msgs(vresult) # Return a map with validation messages. only = ALL_VALIDATIONS
-valids = ValidationSerialized().map_msgs(vresult, only=VALIDATION_VALID) # only for valid data
-invalids = ValidationSerialized().map_msgs(vresult, only=VALIDATION_INVALID) # only for invalid data
-not_validateds = ValidationSerialized().map_msgs(vresult, only=NOT_VALIDATED) # only for invalid data
+print('All validation types:', ValidationSerialized().map_msgs(vresult)) # Return a map with validation messages. only = ALL_VALIDATIONS
+print('Only valid', ValidationSerialized().map_msgs(vresult, only=VALIDATION_VALID)) # only for valid data
+print('only invalid', ValidationSerialized().map_msgs(vresult, only=VALIDATION_INVALID)) # only for invalid data
+print('only not validated', ValidationSerialized().map_msgs(vresult, only=NOT_VALIDATED)) # only for invalid data
 ```
 
-- By default, the ValidationSerialized().map_msgs return the keys in root in output dictionary. Case you want keep the structure of data dictionary just use the parameter root=False
+- By default, the ValidationSerialized().map_msgs() return the keys in root in output dictionary. Case you want keep the structure of data dictionary just use the parameter root=False
 
 ```python
-invalids = ValidationSerialized().map_msgs(vresult, root=False, only=VALIDATION_INVALID) # only for invalid data
-print(invalids)
+print('Only invalid keep structure: ', ValidationSerialized().map_msgs(vresult, root=False, only=VALIDATION_INVALID))
 ```
 
 
@@ -229,7 +232,9 @@ print(invalids)
 
 ```python
 from validathon.validations.ivalidation import IValidation
+from validathon.validator import Validator
 from validathon.decorators import AbsentFieldValidated 
+from validathon.result import ValidationResult
 from typing import Any
 
 
@@ -263,15 +268,8 @@ validator = Validator(vmap)
 validator.validate(data) # Will be raised a Exception: Field "person.child.name" not should be a list.
 ```
 
-- Custom validation with base exception
 
-
-```python
-from validathon.exceptions import ValidathonBaseException
-
-```
-
-#### Avalable Validations
+#### Available Validations
 
 All validations are present in module *validathon.validations*.
 
@@ -309,4 +307,3 @@ StrShouldContains(string: str, exc: Exception = None, valid_msg: str = '')
 ```python
 Required(exc: Exception = None, valid_msg: str = '')
 ```
- 
