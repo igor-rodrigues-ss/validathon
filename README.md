@@ -1,6 +1,6 @@
 # Validathon
 
-## Library for data validation customizable and able to raise external exceptions.
+## Customizable utility for data validation recursive in dictionary with injection of exceptions.
 
 
 

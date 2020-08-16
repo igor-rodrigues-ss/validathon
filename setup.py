@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setup(name='validathon',
     version='0.1.0',
-    description='Customizable utility for data validation in dictionary with injection of exceptions',
+    description='Customizable utility for data validation recursive in dictionary with injection of exceptions.',
     author='Igor Rodrigues Sousa Silva',
     long_description=long_description,
     long_description_content_type="text/markdown",
