@@ -5,11 +5,17 @@
 
 
 - [Resume](#resume)
+- [Details](#details)
+    - [Default Behavior](#default-behavior)
+    - [Customized Validations](#customized-validations)
+        - [Validation Interface](#validation-interface)
+        - [Absent Field Validation](#absent-field-validation)
+    - [Required](#required-for-absent-fields-in-data-dicitionary)
 - [Quick start](#quick-start)
-    - Valid Data
-    - Invalid Data
-    - Invalid Data with custom exception
-    - Invalid Data and catch error (Not Raise Exception)
+    - [Valid Data](#valid-data)
+    - [Invalid Data](#invalid-data)
+    - [Invalid Data with custom exception](#invalid-data-with-custom-exception)
+    - [Invalid Data and catch error (Not Raise Exception)](#invalid-data-and-catch-error-not-raise-exception)
 
 - [Serializing Result of Validation](#serializing-result-of-validation)
 - [Create your own validation](#create-your-own-validation)
@@ -19,22 +25,22 @@
 
 The Validathon library is a tool to make data validations in python dictionaries. This tool have a lot of validation object and perform recursivly validations over dictionaries. This tool have a customizable strutucture for that de developer create your own validations.
 
-The differential of the *Validathon* is the possibility of the inject a exception object for itself library raise if data is invalid. **Then, case you is developing a web application (independent of the framework - Django, flask, aiohttp and etc.) and want raise a HTTPException just use the *exc* attribute passing as value the exception object from validation object**. 
+The differential of the *Validathon* is the possibility of the inject a exception object for itself library raise if data is invalid. **Then, case you is developing a web application (independent of the framework - Django, flask, aiohttp and etc.) and want raise a HTTPException just use the exc attribute from validation object passing as value the HTTPException (or any kind exception) object.**
 
 
 #### Details
 
 ##### Default behavior
 
-- Case the data is valid, the *validator.validate* return a dictionary (with same structure from validated data) with *ValidationResult* objects, Case is invalid a exception will be raised. [example](#invalid-data).
+- Case the data is valid, the *validator.validate* return a dictionary (with same structure from validated data) with *ValidationResult* objects as value, Case is invalid a exception will be raised. [example](#invalid-data).
 
-- Case you not want that a exception be raised, use the *Validation* object as argument to *Cacth* object. [example](#invalid-data-catch-error-and-returning-a-information-object).
+- Case you not want that a exception be raised, use any *Validation* object as argument to *Cacth* object. [example](#invalid-data-and-catch-error-not-raise-exception).
 
 - By defaut the validation object will be validate a field even though it doesn't exist. if you want that validation be optional, pass the value *False* for *required* parameter in validation object.
 When the validation is optional and the field does not exists, will be returned a *ValidationResult* object with attribute *valid=None*.
 
 - By default, case the data validated is valid a ValidationResult will be returned with attriutes:
-    - **valid**: Boolean or None. Will be None if data not is validated
+    - **valid**: Boolean or None. Will be None if data not is validated (case **required=False** and the field not exists in data for validations)
     - **msg**: Message from validation
     - **field_name**: name of field validated
     - **validation**: instance of validation
@@ -47,23 +53,26 @@ When the validation is optional and the field does not exists, will be returned 
 
 ##### Customized Validations
 
-- All validation object are decorated by *AbsentFieldValidation*. This decorator is responsible for make validation if field does not exists or ignore the validation case be optional. If you create your own validations use this decorator you should decorte your validation with this decorator. [Example]( #create-your-own-validation). The parameters of validation object used in this decorator are:
-    - *required: bool = True* should be used as kwarg.
-    - *required_exc: Exception = None* should be used as kwarg.
 
-- all validations implements de *IValidation* interface. This interface standardize the behavior of validation. Case you want create your own validation, you validation class should be implements this interface.
+###### Absent Field Validation
+
+- All validation object are decorated by *AbsentFieldValidation*. This decorator is responsible for make validation if field does not exists in data for validation or ignore validation of this field case the validation object have a atribute **required=False** (Optional validation). If you create your own validations use this decorator you should decorate your validation with this decorator. [Example]( #create-your-own-validation). The parameters of validation object needed for this decorator are:
+    - **required: bool** - Default is **True**. If **required=False** this validation will be optional. This parameter should be used as kwargs.
+    - **required_exc: Exception** - Defaul is  **None**. This parameter define a custom exception for validation object if the field that should validated does not exists. **We recommend that use Required(exc=CustomException) validation rather than pass CustomException for each validation object, because, this way you will pass de CustomException only one turn.** Should be used as kwargs.
+
+###### Validation Interface
+
+- All validations implements de *IValidation* interface. This interface standardize the behavior of validation. Case you want create your own validation, you validation class should be implements this interface.
 
 ##### Required (For absent fields in data dicitionary)
 
-- If a validation object have a *required=True* (this is the default value case required is ommited)
+- If a validation object have a *required=True* (True is the default value)
 the validation will be perform and will fail, will be raised a *FieldDoesNotExistsExc* exception. Is possible inject a custom exception case the field dos not exists using the paramenter *required_exc=CustomException()*. For that you not have inject this exception for all validation objects, use the *Required(exc=CustomException())* object for validate if the field exists or no.
 
 #### Quick start
 
 
 ##### Valid Data
-
-- If data is valid the *validationResult.msg* is empty. Case you want add a custom message for a valid data junt set the message for *valid_msg* parameter in ValidationObject.
 
 ```python
 from validathon.validator import Validator
@@ -91,7 +100,7 @@ print(vresult)
 
 ##### Invalid Data
 
-- The default behavior of validations is raise a exception case data is invalid. If you want change this behavior and return a object with validation information see the next section with use of Catch class.
+- The default behavior of validations is raise a exception case data is invalid. If you want change this behavior and return a object with validation information see the next section with use of [Catch](#invalid-data-and-catch-error-not-raise-exception) class.
 
 ```python
 from validathon.validator import Validator
@@ -122,7 +131,7 @@ from validathon.validator import Validator
 from validathon.validations import Required, MinLengthStr
 
 
-class CustomException(Exception): # Can be a HTTP Exception from some web framework. (Django, Flaskm aiohttp etc....)
+class CustomException(Exception): # Can be a HTTPException from some web framework. (Django, Flask, aiohttp etc....)
     
     def __init__(self):
         super().__init__('My HTTP Exception') 
@@ -217,7 +226,7 @@ print('only invalid', ValidationSerialized().map_msgs(vresult, only=VALIDATION_I
 print('only not validated', ValidationSerialized().map_msgs(vresult, only=NOT_VALIDATED)) # only for invalid data
 ```
 
-- By default, the ValidationSerialized().map_msgs() return the keys in root in output dictionary. Case you want keep the structure of data dictionary just use the parameter root=False
+- By default, the **ValidationSerialized().map_msgs(vresult: bool, root=True, only=ALL_VALIDATIONS)** *(Signature)* return the keys in the output dictionary root. Case you want keep the structure of validated data dictionary just use the parameter **root=False**.
 
 ```python
 print('Only invalid keep structure: ', ValidationSerialized().map_msgs(vresult, root=False, only=VALIDATION_INVALID))
@@ -227,8 +236,8 @@ print('Only invalid keep structure: ', ValidationSerialized().map_msgs(vresult, 
 #### Create your own validation
 
 - For create your own validation you need use two resources:
-    - Use and respect the IValidation Interface.
-    - Use de AbsentFieldValidation decorator.
+    - Use and respect the IValidation Interface. [Validation Interface](#validation-interface).
+    - Use de AbsentFieldValidation decorator. [Absent Field Validation](#absent-field-validation).
 
 ```python
 from validathon.validations.ivalidation import IValidation
